@@ -9,11 +9,14 @@ declare global {
 
 const ParticlesBackground = () => {
   useEffect(() => {
+    console.log('ParticlesBackground component mounted');
+    
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js';
     script.async = true;
     
     script.onload = () => {
+      console.log('Particles.js script loaded');
       if (window.particlesJS) {
         window.particlesJS('particles-js', {
           particles: {
@@ -117,7 +120,14 @@ const ParticlesBackground = () => {
           },
           retina_detect: true
         });
+        console.log('Particles.js initialized');
+      } else {
+        console.error('particlesJS not available');
       }
+    };
+
+    script.onerror = () => {
+      console.error('Failed to load particles.js script');
     };
 
     document.head.appendChild(script);

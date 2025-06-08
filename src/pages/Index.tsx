@@ -9,6 +9,8 @@ import SkillsSection from '@/components/SkillsSection';
 import ContactSection from '@/components/ContactSection';
 
 const Index = () => {
+  console.log('Index component rendering');
+
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <ParticlesBackground />
