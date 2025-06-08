@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, Text3D } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 import { motion } from 'framer-motion';
 
 const FloatingObject = ({ position, icon }: { position: [number, number, number], icon: string }) => {
