@@ -1,60 +1,93 @@
 
-import React, { useRef } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float } from '@react-three/drei';
+import React from 'react';
 import { motion } from 'framer-motion';
 
-const FloatingObject = ({ position, icon }: { position: [number, number, number], icon: string }) => {
-  const meshRef = useRef<any>();
-
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.01;
-      meshRef.current.rotation.y += 0.01;
-    }
-  });
-
-  return (
-    <Float speed={1.4} rotationIntensity={1} floatIntensity={2}>
-      <mesh ref={meshRef} position={position}>
-        <boxGeometry args={[0.5, 0.5, 0.5]} />
-        <meshStandardMaterial 
-          color="#00FFFF" 
-          emissive="#00FFFF" 
-          emissiveIntensity={0.3}
-          transparent
-          opacity={0.8}
-        />
-      </mesh>
-    </Float>
-  );
-};
-
-const ThreeJSScene = () => {
-  return (
-    <Canvas camera={{ position: [0, 0, 5] }} style={{ height: '400px' }}>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#00FFFF" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#B026FF" />
-      
-      <FloatingObject position={[-2, 1, 0]} icon="react" />
-      <FloatingObject position={[2, -1, 0]} icon="js" />
-      <FloatingObject position={[0, 2, -1]} icon="node" />
-      <FloatingObject position={[-1, -2, 1]} icon="three" />
-      <FloatingObject position={[1.5, 0.5, -0.5]} icon="web" />
-    </Canvas>
-  );
-};
-
 const FloatingIcon = () => {
+  const icons = [
+    { emoji: '⚛️', name: 'React', delay: 0 },
+    { emoji: '📱', name: 'JavaScript', delay: 0.2 },
+    { emoji: '🟢', name: 'Node.js', delay: 0.4 },
+    { emoji: '🔷', name: 'TypeScript', delay: 0.6 },
+    { emoji: '🎨', name: 'CSS', delay: 0.8 }
+  ];
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 1, ease: "easeOut" }}
-      className="w-full h-96"
+      className="relative w-full h-96 flex items-center justify-center"
     >
-      <ThreeJSScene />
+      {/* Central glowing orb */}
+      <motion.div
+        animate={{ 
+          rotate: 360,
+          scale: [1, 1.1, 1]
+        }}
+        transition={{ 
+          rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+          scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+        }}
+        className="absolute w-20 h-20 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink rounded-full opacity-60 blur-sm"
+      />
+
+      {/* Floating icons around the center */}
+      {icons.map((icon, index) => {
+        const angle = (index * 360) / icons.length;
+        const radius = 120;
+        const x = Math.cos((angle * Math.PI) / 180) * radius;
+        const y = Math.sin((angle * Math.PI) / 180) * radius;
+
+        return (
+          <motion.div
+            key={icon.name}
+            initial={{ 
+              opacity: 0, 
+              scale: 0,
+              x: 0,
+              y: 0
+            }}
+            animate={{ 
+              opacity: 1, 
+              scale: 1,
+              x: x,
+              y: y,
+              rotate: [0, 360]
+            }}
+            transition={{ 
+              opacity: { duration: 0.6, delay: icon.delay },
+              scale: { duration: 0.6, delay: icon.delay },
+              x: { duration: 0.8, delay: icon.delay },
+              y: { duration: 0.8, delay: icon.delay },
+              rotate: { 
+                duration: 15, 
+                repeat: Infinity, 
+                ease: "linear",
+                delay: icon.delay
+              }
+            }}
+            whileHover={{ 
+              scale: 1.5,
+              zIndex: 10
+            }}
+            className="absolute w-12 h-12 glass-morphism rounded-full flex items-center justify-center text-2xl cursor-pointer hover:shadow-lg hover:shadow-neon-cyan/50 transition-all duration-300"
+          >
+            {icon.emoji}
+          </motion.div>
+        );
+      })}
+
+      {/* Orbital rings */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        className="absolute w-64 h-64 border border-neon-cyan/20 rounded-full"
+      />
+      <motion.div
+        animate={{ rotate: -360 }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        className="absolute w-48 h-48 border border-neon-purple/20 rounded-full"
+      />
     </motion.div>
   );
 };
